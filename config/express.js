@@ -15,8 +15,8 @@ const config = require("./config");
 const APIError = require("../server/helpers/APIError");
 
 const app = express();
-const server = require("http").createServer(app);
-const io = require("socket.io")(server, { origins: "*:*" });
+// const server = require("http").createServer(app);
+// const io = require("socket.io")(server, { origins: "*:*" });
 // io.origins("*:*");
 
 if (config.env === "development") {
@@ -99,17 +99,6 @@ app.use((
   })
 );
 
-server.listen(3000);
-
-io.on("connection", socket => {
-  socket.on("message", ({ message, nickname }) => {
-    console.log("NICKNAME: ", nickname);
-    io.emit("messages", {
-      message,
-      nickname,
-      timestamp: Date.now()
-    });
-  });
-});
+// server.listen(3000);
 
 module.exports = app;
