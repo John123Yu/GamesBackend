@@ -16,7 +16,8 @@ const APIError = require("../server/helpers/APIError");
 
 const app = express();
 const server = require("http").createServer(app);
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, { origins: "*:*" });
+// io.origins("*:*");
 
 if (config.env === "development") {
   app.use(logger("dev"));
