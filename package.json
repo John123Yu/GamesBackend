@@ -12,6 +12,8 @@
   },
   "scripts": {
     "start": "node index.js",
+    "build": "babel  src/ -d dist/",
+    "serve": "pm2 start dist/index.js",
     "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
     "lint": "esw *.js server config --color",
     "lint:watch": "yarn lint -- --watch",
@@ -40,12 +42,15 @@
     "boilerplate"
   ],
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "bluebird": "3.5.1",
-    "body-parser": "1.18.2",
+    "body-parser": "^1.18.2",
     "compression": "1.7.2",
     "cookie-parser": "1.4.3",
     "cors": "2.8.4",
-    "debug": "^2.4.5",
+    "debug": "^2.6.9",
     "dotenv": "^4.0.0",
     "express": "4.16.3",
     "express-jwt": "5.3.1",
