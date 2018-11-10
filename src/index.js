@@ -7,6 +7,8 @@ const app = require("./config/express");
 
 const debug = require("debug")("express-mongoose-es6-rest-api:index");
 
+const { BlackJack } = require("./deck/blackjack");
+
 // make bluebird default Promise
 Promise = require("bluebird"); // eslint-disable-line no-global-assign
 
@@ -39,6 +41,9 @@ if (!module.parent) {
   });
   const io = require("socket.io")(server, { origins: "*:*" });
 
+  let blackJackGame;
+  let blackJackInit = true;
+
   io.on("connection", socket => {
     socket.on("message", ({ message, nickname }) => {
       console.log("NICKNAME: ", nickname);
@@ -46,6 +51,23 @@ if (!module.parent) {
         message,
         nickname,
         timestamp: Date.now()
+      });
+    });
+
+    socket.on("joinBlackJack", ({ name }) => {
+      if (blackJackInit) {
+        blackJackGame = new BlackJack();
+        blackJackInit = false;
+      }
+      blackJackGame.addPlayer(name);
+      console.log(name, " joined");
+    });
+
+    socket.on("startBlackJack", data => {
+      blackJackGame.start();
+      console.log("HERE ", blackJackGame);
+      io.emit("playersCards", {
+        players: blackJackGame.players
       });
     });
   });
