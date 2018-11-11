@@ -1,8 +1,8 @@
 var { BlackJack } = require("../deck/blackjack");
+const { storeUser, getUser } = require("../redis/mainredis");
 
 let blackJackGame;
-
-var blackJackSocket = (socket, io) => {
+var blackJackSocket = (socket, io, errorEmit) => {
   socket.on("joinBlackJack", ({ name }) => {
     if (!blackJackGame) {
       blackJackGame = new BlackJack();
@@ -18,6 +18,10 @@ var blackJackSocket = (socket, io) => {
       players: blackJackGame.players,
       dealer: blackJackGame.dealer
     });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("ALSO HERE");
   });
 };
 
