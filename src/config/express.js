@@ -13,15 +13,32 @@ const winstonInstance = require("./winston");
 const routes = require("../index.route");
 const config = require("./config");
 const APIError = require("../server/helpers/APIError");
+const session = require("express-session");
+const RedisStore = require("connect-redis")(session);
+
+const process = require("process");
+
+var sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  store: new RedisStore({})
+});
 
 const app = express();
-// const server = require("http").createServer(app);
-// const io = require("socket.io")(server, { origins: "*:*" });
-// io.origins("*:*");
 
 if (config.env === "development") {
   app.use(logger("dev"));
 }
+
+//Session Middleware
+app.use(sessionMiddleware);
+// connect.session() warning -> https://github.com/expressjs/session/issues/556
+app.use((req, res, next) => {
+  console.log(`From request: ${req.session.cookie.path}, ${req.session.name}`);
+  next();
+});
+// app.use(express.static("static"));
 
 // parse body params and attache them to req.body
 app.use(bodyParser.json());
@@ -99,6 +116,4 @@ app.use((
   })
 );
 
-// server.listen(3000);
-
-module.exports = app;
+module.exports = { app, sessionMiddleware };

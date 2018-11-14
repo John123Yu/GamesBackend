@@ -1,15 +1,13 @@
 const mongoose = require("mongoose");
 const util = require("util");
-
 // config should be imported before importing any other file
 const config = require("./config/config");
-const app = require("./config/express");
+const { app } = require("./config/express");
 
 const debug = require("debug")("express-mongoose-es6-rest-api:index");
 
 const { socketConnector } = require("./socket/mainsocket");
 // const { redisConnector } = require("./redis/mainredis");
-
 // make bluebird default Promise
 Promise = require("bluebird"); // eslint-disable-line no-global-assign
 
@@ -40,6 +38,7 @@ if (!module.parent) {
   var server = app.listen(config.port, () => {
     console.info(`server started on port ${config.port} (${config.env})`); // eslint-disable-line no-console
   });
+
   // redisConnector(app);
   socketConnector(server);
 }
