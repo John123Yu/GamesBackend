@@ -1,12 +1,12 @@
-const jwt = require('jsonwebtoken');
-const httpStatus = require('http-status');
-const APIError = require('../helpers/APIError');
-const config = require('../../config/config');
+const jwt = require("jsonwebtoken");
+const httpStatus = require("http-status");
+const APIError = require("../helpers/APIError");
+const config = require("../../config/config");
 
 // sample user, used for authentication
 const user = {
-  username: 'react',
-  password: 'express'
+  username: "react",
+  password: "express"
 };
 
 /**
@@ -19,18 +19,48 @@ const user = {
 function login(req, res, next) {
   // Ideally you'll fetch this from the db
   // Idea here was to show how jwt works with simplicity
-  if (req.body.username === user.username && req.body.password === user.password) {
-    const token = jwt.sign({
-      username: user.username
-    }, config.jwtSecret);
+  if (
+    req.body.username === user.username &&
+    req.body.password === user.password
+  ) {
+    const token = jwt.sign(
+      {
+        username: user.username
+      },
+      config.jwtSecret
+    );
     return res.json({
       token,
       username: user.username
     });
   }
 
-  const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
+  const err = new APIError(
+    "Authentication error",
+    httpStatus.UNAUTHORIZED,
+    true
+  );
   return next(err);
+}
+
+/**
+ * Returns jwt token and user if valid token is provided
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function socialLogin(req, res, next) {
+  console.log("HELLO");
+  if (!req.user) {
+    console.log("HELLO", req.user);
+    return res.status(401).send("User Not Authenticated");
+  }
+  req.auth = {
+    id: req.user.id
+  };
+
+  next();
 }
 
 /**
@@ -47,4 +77,4 @@ function getRandomNumber(req, res) {
   });
 }
 
-module.exports = { login, getRandomNumber };
+module.exports = { login, getRandomNumber, socialLogin };

@@ -34,12 +34,4 @@ module.exports = {
       password: Joi.string().required()
     }
   }
-
-  // POST /api/auth/login/google
-  login: {
-    body: {
-      username: Joi.string().required(),
-      tokenId: Joi.string().required()
-    }
-  }
 };

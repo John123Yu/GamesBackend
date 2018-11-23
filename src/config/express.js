@@ -15,15 +15,8 @@ const config = require("./config");
 const APIError = require("../server/helpers/APIError");
 const session = require("express-session");
 const RedisStore = require("connect-redis")(session);
-
+var passport = require("passport");
 const process = require("process");
-
-var sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
-  store: new RedisStore({})
-});
 
 const app = express();
 
@@ -32,7 +25,18 @@ if (config.env === "development") {
 }
 
 //Session Middleware
+var sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  store: new RedisStore({})
+});
 app.use(sessionMiddleware);
+
+//passport
+// app.use(passport.initialize());
+// app.use(passport.session());
+
 // connect.session() warning -> https://github.com/expressjs/session/issues/556
 app.use((req, res, next) => {
   console.log(`From request: ${req.session.cookie.path}, ${req.session.name}`);
@@ -52,7 +56,13 @@ app.use(methodOverride());
 app.use(helmet());
 
 // enable CORS - Cross Origin Resource Sharing
-app.use(cors());
+var corsOption = {
+  origin: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  exposedHeaders: ["x-auth-token"]
+};
+app.use(cors(corsOption));
 
 // enable detailed API logging in dev env
 if (config.env === "development") {

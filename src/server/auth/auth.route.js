@@ -4,15 +4,34 @@ const expressJwt = require("express-jwt");
 const paramValidation = require("../../config/param-validation");
 const authCtrl = require("./auth.controller");
 const config = require("../../config/config");
+var { generateToken, sendToken } = require("../utils/token.utils");
+var passport = require("passport");
+require("../../config/passport")();
 
 const router = express.Router(); // eslint-disable-line new-cap
 
 /** POST /api/auth/login - Returns token if correct username and password is provided */
 router.route("/login").post(validate(paramValidation.login), authCtrl.login);
 
+/** POST /api/auth/google - Returns token and user if correct token is provided */
 router
-  .route("/login/google")
-  .post(validate(paramValidation.loginGoogle), authCtrl.loginGoogle);
+  .route("/google")
+  .post(
+    passport.authenticate("google-token", { session: false }),
+    authCtrl.socialLogin,
+    generateToken,
+    sendToken
+  );
+
+/** POST /api/auth/facebook - Returns token and user if correct token is provided */
+router
+  .route("/facebook")
+  .post(
+    passport.authenticate("facebook-token", { session: false }),
+    authCtrl.socialLogin,
+    generateToken,
+    sendToken
+  );
 
 /** GET /api/auth/random-number - Protected route,
  * needs token returned by the above as header. Authorization: Bearer {token} */
