@@ -1,11 +1,14 @@
-const Joi = require('joi');
+const Joi = require("joi");
+var emailRe = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
 
 module.exports = {
   // POST /api/users
   createUser: {
     body: {
       username: Joi.string().required(),
-      mobileNumber: Joi.string().regex(/^[1-9][0-9]{9}$/).required()
+      email: Joi.string()
+        .regex(emailRe)
+        .required()
     }
   },
 
@@ -13,10 +16,14 @@ module.exports = {
   updateUser: {
     body: {
       username: Joi.string().required(),
-      mobileNumber: Joi.string().regex(/^[1-9][0-9]{9}$/).required()
+      email: Joi.string()
+        .regex(emailRe)
+        .required()
     },
     params: {
-      userId: Joi.string().hex().required()
+      userId: Joi.string()
+        .hex()
+        .required()
     }
   },
 
@@ -25,6 +32,14 @@ module.exports = {
     body: {
       username: Joi.string().required(),
       password: Joi.string().required()
+    }
+  }
+
+  // POST /api/auth/login/google
+  login: {
+    body: {
+      username: Joi.string().required(),
+      tokenId: Joi.string().required()
     }
   }
 };
