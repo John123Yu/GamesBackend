@@ -4,7 +4,7 @@ var passport = require("passport");
 var User = require("../server/user/user.model");
 var FacebookTokenStrategy = require("passport-facebook-token");
 var GoogleTokenStrategy = require("passport-google-token").Strategy;
-var config = require("./config-social");
+var config = require("./config");
 
 module.exports = function() {
   passport.use(

@@ -15,7 +15,7 @@ const config = require("./config");
 const APIError = require("../server/helpers/APIError");
 const session = require("express-session");
 const RedisStore = require("connect-redis")(session);
-var passport = require("passport");
+// var passport = require("passport");
 const process = require("process");
 
 const app = express();
