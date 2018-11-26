@@ -14,7 +14,7 @@ var errorEmit = socket => {
 };
 
 const routes = {
-  chat: /category\/(\d+)\/item\/(\d+)\/chat/
+  messages: /item\/(\d+)\/messages/
 };
 
 const ee = new EventEmitter();
@@ -22,11 +22,11 @@ const namespacesCreated = {};
 
 var socketConnector = server => {
   const io = require("socket.io")(server, { origins: "*:*" });
-  io.use((socket, next) => {
-    sessionMiddleware(socket.request, {}, next);
-  });
+  // io.use((socket, next) => {
+  //   sessionMiddleware(socket.request, {}, next);
+  // });
 
-  io.sockets.on("connection", socket => {
+  io.on("connection", socket => {
     const { ns } = url.parse(socket.handshake.url, true).query;
     let matched = false;
 
@@ -39,12 +39,21 @@ var socketConnector = server => {
     Object.keys(routes).forEach(name => {
       const matches = ns.match(routes[name]);
 
+      console.log(ns);
+      console.log(name);
+      console.log(matches);
+
       if (matches) {
         matched = true;
+        console.log("here");
         if (!namespacesCreated[ns]) {
+          console.log("HELLO");
           // check if the namespace was already created
           namespacesCreated[ns] = true;
-          io.of(ns).on("connection", nsp => {
+          console.log(io.of(ns).on);
+          let namespace = io.of(ns);
+          namespace.on("connection", nsp => {
+            console.log("Jojo is a terrible person");
             const evt = `dynamic.group.${name}`; // emit an event four our group of namespaces
             ee.emit(evt, nsp, ...matches.slice(1, matches.length));
           });
@@ -58,15 +67,11 @@ var socketConnector = server => {
     }
   });
 
-  ee.on("dynamic.group.chat", (socket, categoryId, itemId) => {
-    // implement your chat logic
-  });
-
-  // let namespace = io.of("/api/namespace");
-  namespace.on("connection", socket => {
-    setupSocket(socket, namespace, errorEmit);
-    messagesSocket(socket, namespace, errorEmit);
-    blackJackSocket(socket, namespace, errorEmit);
+  ee.on("dynamic.group.messages", (socket, categoryId, itemId) => {
+    console.log("HERE");
+    setupSocket(socket, categoryId, itemId, errorEmit);
+    messagesSocket(socket, categoryId, itemId, errorEmit);
+    blackJackSocket(socket, categoryId, itemId, errorEmit);
   });
 };
 

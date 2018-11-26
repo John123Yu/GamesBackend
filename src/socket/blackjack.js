@@ -2,7 +2,7 @@ var { BlackJack } = require("../deck/blackjack");
 const { storeUser, getUser } = require("../redis/mainredis");
 
 let blackJackGame;
-var blackJackSocket = (socket, namespace, errorEmit) => {
+var blackJackSocket = (socket, errorEmit) => {
   socket.on("joinBlackJack", ({ name }) => {
     if (!blackJackGame) {
       blackJackGame = new BlackJack();
@@ -14,7 +14,7 @@ var blackJackSocket = (socket, namespace, errorEmit) => {
   socket.on("startBlackJack", data => {
     blackJackGame.start();
     console.log("HERE ", blackJackGame);
-    namespace.emit("playersCards", {
+    socket.emit("playersCards", {
       players: blackJackGame.players,
       dealer: blackJackGame.dealer
     });
