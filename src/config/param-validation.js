@@ -11,7 +11,6 @@ module.exports = {
         .required()
     }
   },
-
   // UPDATE /api/users/:userId
   updateUser: {
     body: {
@@ -26,12 +25,18 @@ module.exports = {
         .required()
     }
   },
-
   // POST /api/auth/login
   login: {
     body: {
       username: Joi.string().required(),
       password: Joi.string().required()
+    }
+  },
+  // POST /api/games
+  createGame: {
+    body: {
+      gamename: Joi.string().required(),
+      userId: Joi.string().required()
     }
   }
 };

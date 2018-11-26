@@ -15,12 +15,16 @@ var createToken = function(auth) {
 
 module.exports = {
   generateToken: function(req, res, next) {
-    console.log("HI");
     req.token = createToken(req.auth);
     return next();
   },
   sendToken: function(req, res) {
     res.setHeader("x-auth-token", req.token);
+    // req.session.token = req.token;
+    // req.session.save(err => {
+    //   console.log("save err", err);
+    //   if (!err) console.log(req.session.token);
+    // });
     return res.status(200).send(JSON.stringify(req.user));
   }
 };

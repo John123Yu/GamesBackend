@@ -17,7 +17,7 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    index: { unique: true, dropDups: true }
+    index: { unique: true, dropDups: true },
     match: [
       emailRe,
       "The value of path {PATH} ({VALUE}) is not a valid mobile number."
@@ -99,7 +99,6 @@ UserSchema.statics = {
         "facebookProvider.id": profile.id
       },
       function(err, user) {
-        console.log("HELLO2", profile);
         // no user was found, lets create a new one
         if (!user) {
           var newUser = new that({

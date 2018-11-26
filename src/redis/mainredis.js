@@ -1,11 +1,11 @@
-const redis = require("redis"),
-  //   process = require("process"),
-  //   express = require("express");
-  config = {
-    redis_host: "127.0.0.1",
-    redis_port: 16379,
-    expire: 600000
-  };
+const redis = require("redis");
+const config = {
+  redis_host: "127.0.0.1",
+  redis_port: 16379,
+  expire: 600000
+};
+Promise = require("bluebird");
+Promise.promisifyAll(redis);
 const client = redis.createClient();
 
 let promiser = (resolve, reject) => {
@@ -27,4 +27,4 @@ let getUser = socketID => {
   });
 };
 
-module.exports = { storeUser, getUser };
+module.exports = { storeUser, getUser, client };

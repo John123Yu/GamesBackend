@@ -15,7 +15,7 @@ const config = require("./config");
 const APIError = require("../server/helpers/APIError");
 const session = require("express-session");
 const RedisStore = require("connect-redis")(session);
-// var passport = require("passport");
+var passport = require("passport");
 const process = require("process");
 
 const app = express();
@@ -39,7 +39,8 @@ app.use(sessionMiddleware);
 
 // connect.session() warning -> https://github.com/expressjs/session/issues/556
 app.use((req, res, next) => {
-  console.log(`From request: ${req.session.cookie.path}, ${req.session.name}`);
+  console.log("TOKEN", req.session.id);
+  // session updated
   next();
 });
 // app.use(express.static("static"));

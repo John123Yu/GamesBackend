@@ -82,6 +82,7 @@ function update(req, res, next) {
  * @returns {User[]}
  */
 function list(req, res, next) {
+  console.log("helo", req.session.token);
   const { limit = 50, skip = 0 } = req.query;
   User.list({ limit, skip })
     .then(users => res.json(users))

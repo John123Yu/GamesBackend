@@ -1,7 +1,7 @@
 const { storeUser, getUser } = require("../redis/mainredis");
 
 var setupSocket = (socket, namespace, errorEmit) => {
-  console.log("here", socket.request.session);
+  // console.log("here", socket.request.session);
   if (socket.request.session.name) {
     socket.emit("name_set", {
       name: socket.request.session.name
@@ -27,7 +27,7 @@ function storeNewUser(socket, nickname, namespace, errorEmit) {
   storeUser(socket.id, nickname).then(() => {
     socket.request.session.name = nickname;
     socket.request.session.save();
-    console.log("HEREEEEEEE", socket.request.session.name);
+    // console.log("HEREEEEEEE", socket.request.session.name);
     namespace.emit("messages", {
       message: `${nickname} has joined.`,
       nickname,

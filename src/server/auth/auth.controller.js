@@ -51,15 +51,17 @@ function login(req, res, next) {
  * @returns {*}
  */
 function socialLogin(req, res, next) {
-  console.log("HELLO");
   if (!req.user) {
-    console.log("HELLO", req.user);
     return res.status(401).send("User Not Authenticated");
   }
   req.auth = {
     id: req.user.id
   };
-
+  req.session.token = req.auth;
+  req.session.save(err => {
+    console.log("save err", err);
+    if (!err) console.log(req.session.id);
+  });
   next();
 }
 
