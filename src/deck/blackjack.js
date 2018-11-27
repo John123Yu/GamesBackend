@@ -1,14 +1,5 @@
 const { deck, Player } = require("./deck");
 
-// console.log(deck);
-// deck.shuffle();
-// let Jojo = new Player("Jojo");
-// Jojo.takeCard(deck);
-// Jojo.takeCard(deck);
-// Jojo.takeCard(deck);
-// console.log(Jojo);
-// console.log(Jojo.blackjackValue());
-
 class BlackJack {
   constructor() {
     this.deck = deck;

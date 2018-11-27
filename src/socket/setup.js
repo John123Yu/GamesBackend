@@ -1,7 +1,6 @@
 const { storeUser, getUser } = require("../redis/mainredis");
 
 var setupSocket = (socket, room, errorEmit) => {
-  console.log("JOJO CAN GO TO HELL");
   // console.log("here", socket.request.session);
   if (socket.request.session.name) {
     socket.emit("name_set", {
