@@ -1,8 +1,8 @@
 const { storeUser, getUser } = require("../redis/mainredis");
 
-var messagesSocket = (socket, room, errorEmit) => {
+var messagesSocket = (socket, io, room, errorEmit) => {
   socket.on("message", ({ message, username }) => {
-    socket.emit("messages", { message, username, timestamp: Date.now() });
+    io.in(room).emit("messages", { message, username, timestamp: Date.now() });
   });
 
   socket.on("disconnect", () => {

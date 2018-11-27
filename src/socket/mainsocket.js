@@ -23,9 +23,9 @@ var socketConnector = server => {
 
     socket.join(room);
 
-    setupSocket(socket, room, errorEmit);
-    messagesSocket(socket, room, errorEmit);
-    blackJackSocket(socket, room, errorEmit);
+    setupSocket(socket, io, room, errorEmit);
+    messagesSocket(socket, io, room, errorEmit);
+    blackJackSocket(socket, io, room, errorEmit);
   });
 };
 

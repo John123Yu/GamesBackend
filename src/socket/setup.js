@@ -1,6 +1,6 @@
 const { storeUser, getUser } = require("../redis/mainredis");
 
-var setupSocket = (socket, room, errorEmit) => {
+var setupSocket = (socket, io, room, errorEmit) => {
   // console.log("here", socket.request.session);
   if (socket.request.session.name) {
     socket.emit("name_set", {
