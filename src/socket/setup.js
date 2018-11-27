@@ -9,7 +9,7 @@ var setupSocket = (socket, room, errorEmit) => {
     storeUser(socket.id, socket.request.session.name).then(() => {
       socket.emit("messages", {
         message: `${socket.request.session.name} has joined`,
-        nickname: socket.request.session.name,
+        username: socket.request.session.name,
         timestamp: Date.now()
       });
     }, errorEmit(socket));
@@ -18,19 +18,19 @@ var setupSocket = (socket, room, errorEmit) => {
       name: false
     });
   }
-  socket.on("name", ({ nickname }) => {
-    storeNewUser(socket, nickname, errorEmit);
+  socket.on("name", ({ username }) => {
+    storeNewUser(socket, username, errorEmit);
   });
 };
 
-function storeNewUser(socket, nickname, errorEmit) {
-  storeUser(socket.id, nickname).then(() => {
-    socket.request.session.name = nickname;
+function storeNewUser(socket, username, errorEmit) {
+  storeUser(socket.id, username).then(() => {
+    socket.request.session.name = username;
     socket.request.session.save();
     // console.log("HEREEEEEEE", socket.request.session.name);
     socket.emit("messages", {
-      message: `${nickname} has joined.`,
-      nickname,
+      message: `${username} has joined.`,
+      username,
       timestamp: Date.now()
     });
   }, errorEmit(socket));

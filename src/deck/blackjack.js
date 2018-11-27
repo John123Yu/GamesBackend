@@ -11,13 +11,15 @@ class BlackJack {
     let player = new Player(name);
     this.players.push(player);
   }
-  start() {
+  start(callback) {
     for (let i = 0; i < 2; i++) {
       this.players.forEach(player => {
         player.takeCard(this.deck);
       });
       this.dealer.takeCard(this.deck);
     }
+    callback();
+    this.start = () => {};
   }
 }
 
