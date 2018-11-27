@@ -2,7 +2,7 @@ var { BlackJack } = require("../deck/blackjack");
 const { storeUser, getUser } = require("../redis/mainredis");
 
 let blackJackGame;
-var blackJackSocket = (socket, errorEmit) => {
+var blackJackSocket = (socket, room, errorEmit) => {
   socket.on("joinBlackJack", ({ name }) => {
     if (!blackJackGame) {
       blackJackGame = new BlackJack();

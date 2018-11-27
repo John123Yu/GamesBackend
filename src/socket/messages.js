@@ -1,6 +1,6 @@
 const { storeUser, getUser } = require("../redis/mainredis");
 
-var messagesSocket = (socket, categoryId, itemId, errorEmit) => {
+var messagesSocket = (socket, room, errorEmit) => {
   socket.on("message", ({ message, nickname }) => {
     socket.emit("messages", { message, nickname, timestamp: Date.now() });
   });
