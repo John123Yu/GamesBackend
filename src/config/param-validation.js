@@ -38,5 +38,11 @@ module.exports = {
       gamename: Joi.string().required(),
       userId: Joi.string().required()
     }
+  },
+
+  gameActions: {
+    body: {
+      gamename: Joi.string().required()
+    }
   }
 };

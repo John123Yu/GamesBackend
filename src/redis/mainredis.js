@@ -6,6 +6,7 @@ const config = {
 };
 Promise = require("bluebird");
 Promise.promisifyAll(redis);
+
 const client = redis.createClient();
 
 let promiser = (resolve, reject) => {

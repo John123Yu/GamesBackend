@@ -5,19 +5,21 @@ var messagesSocket = (socket, io, room, errorEmit) => {
     io.in(room).emit("messages", { message, username, timestamp: Date.now() });
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", reason => {
     getUser(socket.id)
       .then(user => {
         if (user === null) return "Someone";
         else return user;
       })
       .then(user => {
-        console.log(`${user} has left`);
-        socket.broadcast.emit("messages", {
-          message: `${user} left`,
-          username: user,
-          timestamp: Date.now()
-        });
+        console.log(`${user} has left for ${reason}`);
+        if (reason !== "ping timeout") {
+          io.in(room).emit("messages", {
+            message: `${user} left`,
+            username: user,
+            timestamp: Date.now()
+          });
+        }
       }, errorEmit(socket));
   });
 };

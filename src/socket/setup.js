@@ -19,16 +19,16 @@ var setupSocket = (socket, io, room, errorEmit) => {
     });
   }
   socket.on("name", ({ username }) => {
-    storeNewUser(socket, username, errorEmit);
+    storeNewUser(socket, io, room, username, errorEmit);
   });
 };
 
-function storeNewUser(socket, username, errorEmit) {
+function storeNewUser(socket, io, room, username, errorEmit) {
   storeUser(socket.id, username).then(() => {
     socket.request.session.name = username;
     socket.request.session.save();
     // console.log("HEREEEEEEE", socket.request.session.name);
-    socket.emit("messages", {
+    io.in(room).emit("messages", {
       message: `${username} has joined.`,
       username,
       timestamp: Date.now()
