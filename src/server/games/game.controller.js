@@ -1,33 +1,48 @@
 // Expires sets ---> https://quickleft.com/blog/how-to-create-and-expire-list-items-in-redis/
 
-const { client } = require("../../redis/mainredis");
+const { client: redisClient } = require("../../redis/mainredis");
+var Q = require("q");
+var moment = require("moment");
 
-if (!client.exists("allGames")) {
-  client
-    .zaddAsync(["allGames", new Date().getTime(), "demo"])
-    .then((err, reply) => {
-      if (err) console.log(err);
-      else console.log(reply);
-    });
+var redisHelper = {
+  sAdd: function(setName, itemId) {
+    return Q.ninvoke(redisClient, "sadd", setName, itemId);
+  },
+
+  expire: function(key, timeToLive) {
+    return Q.ninvoke(redisClient, "expire", key, timeToLive);
+  }
+};
+
+function addActivity(itemId, timestamp) {
+  var setName = "games" + "-" + _flooredDate(timestamp).unix();
+  console.log("set name", setName);
+  var ttl = _flooredDate(timestamp)
+    .add(24, "hours")
+    .unix();
+
+  return redisHelper.sAdd(setName, itemId).then(function() {
+    return redisHelper.expire(setName, ttl);
+  });
 }
+
+function _flooredDate(timestamp) {
+  return moment(timestamp)
+    .utc()
+    .startOf("hour");
+}
+
 async function create(req, res, next) {
-  let gamename = `${req.body.gamename}`;
-  let exists = await client.existsAsync(gamename);
+  let gamename = `${req.body.gametype}-${req.body.gamename}`;
+  let exists = await redisClient.existsAsync(gamename);
   if (exists !== "0") {
-    console.log("IN");
-    let setGame = client.setAsync(gamename, "1", "EX", 86400);
-    let addGametoSet = client.zaddAsync([
-      "allGames",
-      new Date().getTime(),
-      gamename
-    ]);
+    let setGame = redisClient.setAsync(gamename, "1", "EX", 86400);
+    let addGametoSet = addActivity(gamename, new Date().getTime());
     Promise.all([setGame, addGametoSet])
       .then(values => {
-        console.log("values", values);
         res.json(values);
       })
       .catch(error => {
-        console.log("error!", error);
         res.json(error);
       });
   } else {
@@ -36,38 +51,44 @@ async function create(req, res, next) {
 }
 
 function join(req, res, next) {
-  if (client.exists(req.body.gamename)) {
-    client.incrAsync(req.body.gamename).then(value => {
+  if (redisClient.exists(req.body.gamename)) {
+    redisClient.incrAsync(req.body.gamename).then(value => {
       res.json({ message: `joined ${req.body.gamename} - ${value}` });
     });
   }
 }
 
 function leave(req, res, next) {
-  if (client.exists(req.body.gamename)) {
-    client.decr(req.body.gamename);
+  if (redisClient.exists(req.body.gamename)) {
+    redisClient.decr(req.body.gamename);
   } else {
     res.json({ message: `${req.body.gamename} does not exist` });
-  }
-  if (client.get(req.body.gamename) < 1) {
-    client.zrem("allGames", req.body.gamename);
   }
   res.json({ message: `left ${req.body.gamename}` });
 }
 
-function list(req, res, next) {
-  let allGames = client
-    .zrangeAsync("allGames", 0, -1)
-    .then(games => {
-      console.log("HERE, ", games);
-      res.json(games);
-    })
-    .catch(err => {
-      res.json(err);
+async function list(req, res, next) {
+  let games_in_all_sets = [];
+  for (let i = 0; i < 24; i++) {
+    var old_set_times = _flooredDate(new Date().getTime())
+      .subtract(i, "hours")
+      .unix();
+    var setName = "games" + "-" + old_set_times;
+    let games = await redisClient.smembersAsync(setName);
+    console.log(games);
+    games.forEach(element => {
+      games_in_all_sets.push(element);
     });
+  }
+  res.json(games_in_all_sets);
 }
 
-module.exports = { create, join, list, leave };
+async function get(req, res, next) {
+  let game = redisClient.getAsync(req.params.gamename);
+  res.json(game);
+}
+
+module.exports = { create, join, list, leave, get };
 
 function makeid(range) {
   var text = "";

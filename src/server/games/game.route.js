@@ -2,7 +2,6 @@ const express = require("express");
 const validate = require("express-validation");
 const paramValidation = require("../../config/param-validation");
 const gameCtrl = require("./game.controller");
-// make sure to add validation with paramValidation
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -13,6 +12,11 @@ router
 
   /** POST /api/games - Create new game */
   .post(validate(paramValidation.gameActions), gameCtrl.create);
+
+router
+  .route("/:userId")
+  /** GET /api/games/:gameId - Get game */
+  .get(gameCtrl.get);
 
 router
   .route("/games/join")
