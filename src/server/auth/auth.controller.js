@@ -9,7 +9,7 @@ const user = {
   password: "express"
 };
 
-/**
+/**np
  * Returns jwt token if valid username and password is provided
  * @param req
  * @param res

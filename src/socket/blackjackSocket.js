@@ -1,4 +1,4 @@
-var { BlackJack } = require("../deck/blackjack");
+var { BlackJack } = require("./deck/blackjack");
 
 let blackJackGames = {};
 var blackJackSocket = (socket, io, room, errorEmit) => {

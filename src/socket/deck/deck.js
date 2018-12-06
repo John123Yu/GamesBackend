@@ -46,6 +46,7 @@ class Deck {
     this.buildDeck();
   }
   buildDeck() {
+    this.cards.length = 0;
     suits.forEach(suit => {
       for (let number in values) {
         let newestCard = new Card(
@@ -80,39 +81,36 @@ class Deck {
     return this.cards.length > 0 ? this.cards.pop() : null;
   }
 }
+//this is a blackjack player
 class Player {
   constructor(name) {
     this.name = name;
     this.hand = [];
-    this.position;
-    this.aces = 0;
-    this.status = true;
   }
   takeCard(deck) {
-    if (!this.status) return this;
     this.hand.push(deck.dealRandomCard());
-    this.hand[this.hand.length - 1].number === "1" ? this.aces++ : undefined;
-    if (this.blackjackValue() > 21) this.status = false;
     return this;
-  }
-  stay() {
-    this.status = false;
-    return this;
-  }
-  blackjackValue() {
-    let value = 0;
-    for (let i = 0; i < this.hand.length; i++) {
-      !isNaN(this.hand[i].score)
-        ? (value += this.hand[i].score)
-        : (value += this.hand[i].score[0]);
-    }
-    while (value > 21 && this.aces > 0) {
-      this.aces--;
-      value -= 10;
-    }
-    return value;
   }
 }
+class CardGame() {
+  constructor() {
+      this.deck = new Deck();
+      this.deck.reset();
+      this.players = [];
+  }
+  addPlayer(name, cls) {
+      if (this.players.length < 5) {
+        let player = new cls(name);
+        this.players.push(player);
+      }
+    }
+}
+
+module.exports = {
+  Deck,
+  Player,
+  CardGame
+};
 
 function imageGenerator(suit, number) {
   if (suit == "s") {
@@ -125,10 +123,3 @@ function imageGenerator(suit, number) {
     return `c${number}.png`;
   }
 }
-
-let deck = new Deck();
-
-module.exports = {
-  deck,
-  Player
-};

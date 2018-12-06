@@ -13,7 +13,7 @@ var messagesSocket = (socket, io, room, errorEmit) => {
       })
       .then(user => {
         console.log(`${user} has left for ${reason}`);
-        if (reason !== "ping timeout") {
+        if (reason !== "ping timeout" && user !== "Someone") {
           io.in(room).emit("messages", {
             message: `${user} left`,
             username: user,

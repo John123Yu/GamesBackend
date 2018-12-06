@@ -1,6 +1,8 @@
-var { blackJackSocket } = require("./blackjack");
-var { messagesSocket } = require("./messages");
-var { setupSocket } = require("./setup");
+var { blackJackSocket } = require("./blackjackSocket");
+var { messagesSocket } = require("./messagesSocket");
+var { setupSocket } = require("./setupSocket");
+var { warSocket } = require("./warSocket");
+
 const { sessionMiddleware } = require("../config/express");
 const url = require("url");
 //set this up with routes
@@ -26,6 +28,7 @@ var socketConnector = server => {
     setupSocket(socket, io, room, errorEmit);
     messagesSocket(socket, io, room, errorEmit);
     blackJackSocket(socket, io, room, errorEmit);
+    warSocket(socket, io, room, errorEmit);
   });
 };
 

@@ -1,4 +1,5 @@
 // Expires sets ---> https://quickleft.com/blog/how-to-create-and-expire-list-items-in-redis/
+// what if redis client goes down?
 
 const { client: redisClient } = require("../../redis/mainredis");
 var Q = require("q");
